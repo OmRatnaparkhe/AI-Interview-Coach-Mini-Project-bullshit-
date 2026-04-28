@@ -15,12 +15,15 @@ api.interceptors.request.use(async (config) => {
   if (!getToken) return config;
   const token = await getToken();
   if (token) {
-    config.headers = {
-      ...config.headers,
-      'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      Authorization: `Bearer ${token}`
-    } as any;
+    config.headers.Authorization = `Bearer ${token}`;
+    if (!config.headers.Accept) {
+      config.headers.Accept = 'application/json';
+    }
+    
+    const isFormData = config.data instanceof FormData;
+    if (!config.headers['Content-Type'] && !isFormData) {
+      config.headers['Content-Type'] = 'application/json';
+    }
   }
   return config;
 });
