@@ -213,13 +213,14 @@ export default function Voice() {
         setTimeout(() => endInterview(), 3000);
       } else if (res.data.nextQuestion) {
         setTimeout(() => {
-          if (res.data.nextQuestion) {
+          const nextQuestion = res.data.nextQuestion;
+          if (nextQuestion) {
             setConversation(prev => [
               ...prev,
-              { speaker: "Alex Morgan", text: res.data.nextQuestion, timestamp: new Date() }
+              { speaker: "Alex Morgan", text: nextQuestion, timestamp: new Date() }
             ]);
             // Speak the next question
-            speakText(res.data.nextQuestion);
+            speakText(nextQuestion);
           }
         }, 3000);
       }
