@@ -21,11 +21,14 @@ interface ResumeAnalysis {
 
 export async function analyzeResume(file: Express.Multer.File): Promise<ResumeAnalysis> {
   try {
-    // Read the file content (for now, we'll simulate analysis)
-    const fileContent = await fs.readFile(file.path, 'utf-8').catch(() => {
+    // Read the file content from memory buffer
+    let fileContent: string;
+    try {
+      fileContent = file.buffer.toString('utf-8');
+    } catch {
       // If we can't read as text, we'll use filename and size for analysis
-      return `[Resume: ${file.originalname}, Size: ${file.size} bytes]`;
-    });
+      fileContent = `[Resume: ${file.originalname}, Size: ${file.size} bytes]`;
+    }
 
     const prompt = `
       Analyze this resume and provide detailed feedback in the following JSON format:
@@ -84,13 +87,8 @@ export async function analyzeResume(file: Express.Multer.File): Promise<ResumeAn
       throw new Error("Invalid analysis format");
     }
 
-    // Clean up the uploaded file
-    await fs.unlink(file.path).catch(() => {});
-
     return analysis;
   } catch (error) {
-    // Clean up the uploaded file even if analysis fails
-    await fs.unlink(file.path).catch(() => {});
     
     // If AI analysis fails, return a default analysis
     console.error("Resume analysis error:", error);

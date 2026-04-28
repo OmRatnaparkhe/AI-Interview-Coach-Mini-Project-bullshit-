@@ -1,11 +1,7 @@
 import multer from "multer";
 
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
+// Use memory storage for serverless compatibility
+const storage = multer.memoryStorage();
 
 // Audio file filter for voice uploads
 const audioFileFilter = (req: any, file: Express.Multer.File, cb: any) => {
