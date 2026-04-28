@@ -87,9 +87,7 @@ export default function ResumeReview() {
     formData.append("resume", file);
 
     try {
-      const res = await api.post<ResumeAnalysis>("/resume/analyze", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
+      const res = await api.post("/resume/analyze", formData);
       setAnalysis(res.data);
     } catch (e: any) {
       setError(e?.message || "Failed to analyze resume");
